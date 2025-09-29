@@ -1,5 +1,7 @@
 ﻿#include <chrono>
+#include <iomanip>
 #include <iostream>
+#include <vector>
 
 class MyObject
 {
@@ -8,39 +10,66 @@ public:
 	MyObject() : x(1), y(2), z(3) {}
 };
 
+double testHeap(int numObjects)
+{
+	std::chrono::high_resolution_clock::time_point startHeap = std::chrono::high_resolution_clock::now();
+
+	for (int i = 0; i < numObjects; ++i)
+	{
+		MyObject* obj = new MyObject();
+		delete obj;
+	}
+
+	std::chrono::high_resolution_clock::time_point endHeap = std::chrono::high_resolution_clock::now();
+
+	std::chrono::duration<double, std::milli> elapsedHeap = endHeap - startHeap;
+
+	//std::cout << "Heap allocation time: " << elapsedHeap.count() << " ms\n";
+
+	return elapsedHeap.count();
+}
+
+double testStack(int numObjects)
+{
+	std::chrono::high_resolution_clock::time_point startStack = std::chrono::high_resolution_clock::now();
+
+	for (int i = 0; i < numObjects; ++i)
+	{
+		MyObject obj;
+	}
+
+	std::chrono::high_resolution_clock::time_point  endStack = std::chrono::high_resolution_clock::now();
+
+	std::chrono::duration<double, std::milli> elapsedStack = endStack - startStack;
+
+	//std::cout << "Stack allocation time: " << elapsedStack.count() << " ms\n";
+
+	return elapsedStack.count();
+}
+
 int main()
 {
-	const int NUM_OBJECTS = 100000; //1e5; if I define it in scientific style, it will be casted in double, but not constant;
-	
-		std::chrono::high_resolution_clock::time_point startHeap = std::chrono::high_resolution_clock::now();
+	std::vector<int> testCases = { 10, 100, 1000, 10000, 100000, 1000000, 10000000 };
 
-		for (int i = 0; i < NUM_OBJECTS; ++i)
-		{
-			MyObject* obj = new MyObject();
-			delete obj;
-		}
+	std::cout << std::setw(12) << "Objects"
+		<< std::setw(15) << "Heap (ms)"
+		<< std::setw(15) << "Stack (ms)"
+		<< std::setw(15) << "Difference\n";
+	std::cout << std::string(60, '-') << "\n";
 
-		std::chrono::high_resolution_clock::time_point endHeap = std::chrono::high_resolution_clock::now();
+	for (int n : testCases)
+	{
+		double heapTime = testHeap(n);
 
-		std::chrono::duration<double, std::milli> elapsedHeap = endHeap - startHeap;
+		double stackTime = testStack(n);
 
-		std::cout << "Heap allocation time: " << elapsedHeap.count() << " ms\n";
-	
-	
-		std::chrono::high_resolution_clock::time_point startStack = std::chrono::high_resolution_clock::now();
+		double ratio = heapTime / stackTime;
 
-		for (int i = 0; i < NUM_OBJECTS; ++i)
-		{
-			MyObject obj;
-		}
+		std::cout << std::setw(12) << n
+			<< std::setw(15) << std::fixed << std::setprecision(4) << heapTime
+			<< std::setw(15) << stackTime
+			<< std::setw(15) << std::setprecision(2) << ratio << "x\n";
+	}
 
-		std::chrono::high_resolution_clock::time_point  endStack = std::chrono::high_resolution_clock::now();
-
-		std::chrono::duration<double, std::milli> elapsedStack = endStack - startStack;
-
-		std::cout << "Stack allocation time: " << elapsedStack.count() << " ms\n";
-
-		std::cout << "Difference in " << elapsedHeap.count() / elapsedStack.count() << "x" << std::endl;
-	
 	return 0;
 }
