@@ -18,6 +18,7 @@ double testHeap(int numObjects)
 	{
 		MyObject* obj = new MyObject();
 		delete obj;
+		obj = 0;
 	}
 
 	std::chrono::high_resolution_clock::time_point endHeap = std::chrono::high_resolution_clock::now();
