@@ -12,7 +12,7 @@ public:
 
 double testHeap(int numObjects)
 {
-	std::chrono::high_resolution_clock::time_point startHeap = std::chrono::high_resolution_clock::now();
+	auto startHeap = std::chrono::high_resolution_clock::now();
 
 	for (int i = 0; i < numObjects; ++i)
 	{
@@ -21,7 +21,7 @@ double testHeap(int numObjects)
 		obj = 0;
 	}
 
-	std::chrono::high_resolution_clock::time_point endHeap = std::chrono::high_resolution_clock::now();
+	auto endHeap = std::chrono::high_resolution_clock::now();
 
 	std::chrono::duration<double, std::milli> elapsedHeap = endHeap - startHeap;
 
@@ -30,14 +30,14 @@ double testHeap(int numObjects)
 
 double testStack(int numObjects)
 {
-	std::chrono::high_resolution_clock::time_point startStack = std::chrono::high_resolution_clock::now();
+	auto startStack = std::chrono::high_resolution_clock::now();
 
 	for (int i = 0; i < numObjects; ++i)
 	{
 		MyObject obj;
 	}
 
-	std::chrono::high_resolution_clock::time_point  endStack = std::chrono::high_resolution_clock::now();
+	auto endStack = std::chrono::high_resolution_clock::now();
 
 	std::chrono::duration<double, std::milli> elapsedStack = endStack - startStack;
 
